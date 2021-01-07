@@ -1,4 +1,5 @@
 # And Import Statement to make code from other files available
+from os import lseek
 from models.item import Item
 import csv
 
@@ -17,36 +18,61 @@ def menu():  # Prints Menu Options for the user
 
 def list_items():  # Writes all items to the Terminal
     """
-    TODO
     1.) Read file into python
     2.) Parse the file into usable data
     3.)Print out each item in the file
     """
 
-with open('inventory.csv', 'r') as file:
-    csv_reader = csv.DictReader(file)
-    for x in csv_reader:
-        print(x)
-
+    with open('inventory.csv', 'r') as file:
+        csv_reader = csv.DictReader(file)
+        for row in csv_reader:
+            message = f"ID: { row['id'] }\tName: { row['name'] }\tCondition: { row['condition']}"
+            print(message)
 
     # for item in items:
     #     print(item)
 
-
 def new_item():  # Gets user input for all need fields for an Item
-    global next_id  # Allows us access to the next_id number
+    """
+    TODO
+    1.) open and parse the file into CSV
+    2.) detect what the next id will be
+    3.)promt the user for new item data (name, condition)
+    4.) add this item to the inventory.csv file
+    """
+    with open('inventory.csv', 'r+') as file:
+        current_items = list(csv.DictReader(file))
+        try:
+            last_id = int(current_items[-1]['id'])
+        except IndexError:
+            last_id = -1
+    with open('inventory.csv', 'a+', newline="") as file:
+        name = input('Name: > ')
+        condition = input('Condition: > ')
+        item ={
+            "id": last_id + 1,
+            "name": name,
+            "condition": condition
+        }
+        writer = csv.DictWriter(file, ["id", "name", "condition"], )
+        if last_id ==-1:
+            writer.writeheader()
+        writer.writerow(item)
 
-    name = input("Name: ")
-    cond = input("Condition: ")
-    # Uses the global counter to give a Unique Id for each "Item"
-    item_id = next_id
 
-    next_id += 1  # Updates Id with new value so next one is 1 more
+    # global next_id  # Allows us access to the next_id number
 
-    # This is the Class -> Item from the other file we imported
-    tmp = Item(item_id, name, cond)  # Builds An Item/Stores it in tmp
+    # name = input("Name: ")
+    # cond = input("Condition: ")
+    # # Uses the global counter to give a Unique Id for each "Item"
+    # item_id = next_id
 
-    items.append(tmp)  # Adds Item to global items array
+    # next_id += 1  # Updates Id with new value so next one is 1 more
+
+    # # This is the Class -> Item from the other file we imported
+    # tmp = Item(item_id, name, cond)  # Builds An Item/Stores it in tmp
+
+    # items.append(tmp)  # Adds Item to global items array
 
 
 def update_existing():  # Update Existing Item

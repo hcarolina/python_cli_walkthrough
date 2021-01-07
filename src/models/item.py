@@ -8,10 +8,9 @@ class Item:
         return f"Id:{self.item_id}\tName:{self.name}\tCondition:{self.condition}"
 
 
-
 if __name__ == "__main__":
     item_one = Item(0, "book", "used")
     item_two = Item(1, "water bottle", "new")
 
-    print(item_one)
+    print(item_one.item_id)
     print(item_two)

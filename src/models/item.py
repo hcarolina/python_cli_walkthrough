@@ -1,10 +1,3 @@
-#  "Items" they have:
-#             id 
-#             name
-#             cond
-
-
-
 class Item:
     def __init__(self, item_id, name, condition):
         self.item_id = item_id

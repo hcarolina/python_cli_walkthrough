@@ -1,18 +1,8 @@
-"""
-Work wants an inventory app that:
-    Stores Data into a file
-    Uses the command line to list/add/update/delete:
-        "Items" they have:
-            id
-            name
-            cond
-"""
 # And Import Statement to make code from other files available
 from models.item import Item
 
 next_id = 0
 items = []  # This will be used to store items
-
 
 def menu():  # Prints Menu Options for the user
     print("""
@@ -45,8 +35,7 @@ def new_item():  # Gets user input for all need fields for an Item
     items.append(tmp)  # Adds Item to global items array
 
 
-# Update Existing Item
-def update_existing():
+def update_existing():  # Update Existing Item
     print("inside update existing")
     if not items:
         print("You have no items to update")
@@ -55,7 +44,7 @@ def update_existing():
     try:
         item_id_to_update = int(input("What is the item id you wish to update\n> "))
     except Exception:
-        print("not a valid number")
+        print("Not a valid number.")
         return
 
     for item in items:
@@ -67,11 +56,27 @@ def update_existing():
         print("We didn't find a match")
 
 
-
 # Delete Item (By item id)
 def delete_item():
-    print("inside del item")
+    if not items:
+        print("You have no items to delete")
+        return
+    list_items()
+    try:
+        item_id_to_delete = int(input("What is the item id you wish to update\n> "))
+    except Exception:
+        print("Not a valid number.")
+        return
 
+    for index, item in enumerate(items):
+        if item.item_id == item_id_to_delete:
+            index_to_remove = index
+            break
+    else:
+        print("We didn't find a match")
+        return
+    removed_item = items.pop(index_to_remove)
+    print(f"Found:\n{removed_item} it has been removed")
 
 
 def main():  # Starts the Program off, holds the loop until exit.
@@ -95,7 +100,7 @@ def main():  # Starts the Program off, holds the loop until exit.
             input("Invalid Input!\n(Press Enter to try again)")
 
 
-# Make the File Saving stuff
+# TODO Make the File Saving stuff
 
 if __name__ == "__main__":
     main()

@@ -1,5 +1,6 @@
 # And Import Statement to make code from other files available
 from models.item import Item
+import csv
 
 next_id = 0
 items = []  # This will be used to store items
@@ -15,8 +16,21 @@ def menu():  # Prints Menu Options for the user
 
 
 def list_items():  # Writes all items to the Terminal
-    for item in items:
-        print(item)
+    """
+    TODO
+    1.) Read file into python
+    2.) Parse the file into usable data
+    3.)Print out each item in the file
+    """
+
+with open('inventory.csv', 'r') as file:
+    csv_reader = csv.DictReader(file)
+    for x in csv_reader:
+        print(x)
+
+
+    # for item in items:
+    #     print(item)
 
 
 def new_item():  # Gets user input for all need fields for an Item
@@ -80,6 +94,8 @@ def delete_item():
 
 
 def main():  # Starts the Program off, holds the loop until exit.
+    # Detect if hte inventory.scv file exists. Create if no. 
+    open('inventory.csv', 'a+').close()
     while True:
         menu()  # Prints the Options to the Terminal
         choice = input("> ")  # Takes use choice

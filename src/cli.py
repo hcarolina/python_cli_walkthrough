@@ -34,7 +34,6 @@ def list_items():  # Writes all items to the Terminal
 
 def new_item():  # Gets user input for all need fields for an Item
     """
-    TODO
     1.) open and parse the file into CSV
     2.) detect what the next id will be
     3.)promt the user for new item data (name, condition)

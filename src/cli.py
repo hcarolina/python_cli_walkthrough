@@ -1,19 +1,20 @@
 # And Import Statement to make code from other files available
-from os import lseek
 from models.item import Item
 import csv
+import tempfile
+import shutil
 
 next_id = 0
 items = []  # This will be used to store items
 
 def menu():  # Prints Menu Options for the user
     print("""
-1. List All Items
-2. Add New Item
-3. Update Existing Item
-4. Delete Item (By item id)
-5. Exit
-""")
+    1. List All Items
+    2. Add New Item
+    3. Update Existing Item
+    4. Delete Item (By item id)
+    5. Exit
+    """)
 
 
 def list_items():  # Writes all items to the Terminal
@@ -59,40 +60,48 @@ def new_item():  # Gets user input for all need fields for an Item
         writer.writerow(item)
 
 
-    # global next_id  # Allows us access to the next_id number
-
-    # name = input("Name: ")
-    # cond = input("Condition: ")
-    # # Uses the global counter to give a Unique Id for each "Item"
-    # item_id = next_id
-
-    # next_id += 1  # Updates Id with new value so next one is 1 more
-
-    # # This is the Class -> Item from the other file we imported
-    # tmp = Item(item_id, name, cond)  # Builds An Item/Stores it in tmp
-
-    # items.append(tmp)  # Adds Item to global items array
-
-
 def update_existing():  # Update Existing Item
-    print("inside update existing")
-    if not items:
-        print("You have no items to update")
-        return
-    list_items()
-    try:
-        item_id_to_update = int(input("What is the item id you wish to update\n> "))
-    except Exception:
-        print("Not a valid number.")
-        return
+    """
+    TODO
+    1.) Ask the user which of the existing items to update. 
+    2.)Display the item ask to verify if it is the correct item for update
+    3.)Ask what values to update
+    4.) create a temporary file in python, which is a copy of the csv (tempfile)
+    5.) line by line, copy the information over to the new temp file
+    6.)when we reach the item we want ot update, then write the new line (changed data)
+    7.) continue line by line until the file is complete
+    8.) overwrite the old csv file. (shutil)
+    """
 
-    for item in items:
-        if item.item_id == item_id_to_update:
-            item.name = input("Name: ")
-            item.condition = input("Condition: ")
-            break
-    else:
-        print("We didn't find a match")
+    with open('inventory.csv', 'r') as file:
+        reader = csv.DictReader(file)
+        if len(list(reader)) == 0:
+            print('No items for you to update. Exiting update...')
+            return
+        else:
+            # Go back to the beginning of the file, and skip the header line
+            file.seek(0)
+            file.readline()
+        choice = input('Which item to update, choose an ID: > ')
+        # TODO: Check if the item exists
+        new_name = input('Change for the name (blank to leave as is): > ')
+        new_condition = input('Change for the condition (blank to leave as is): > ')
+        temp_file = tempfile.NamedTemporaryFile(mode='w', newline='', delete=False)
+        csv_writer = csv.DictWriter(temp_file, ['id', 'name', 'condition'])
+        csv_writer.writeheader()
+        for item in reader:
+            print(item)
+            if item['id'] == choice:
+                updated_item = {
+                    'id': item['id'],
+                    'name': new_name if len(new_name) > 0 else item['name'],
+                    'condition': new_condition if len(new_condition) > 0 else item['condition']
+                }
+                csv_writer.writerow(updated_item)
+            else:
+                csv_writer.writerow(item)
+        temp_file.close()
+    shutil.move(temp_file.name, 'inventory.csv')
 
 
 # Delete Item (By item id)
